@@ -1,0 +1,50 @@
+NAME = exercice_6
+
+NAMETEST = tests_run
+
+CC	= gcc
+
+RM	= rm -f
+
+MAIN = ./main.c \
+
+MAINOBJ = $(MAIN:.c=.o)
+
+SRCS	=   ./src/init_info.c \
+			./src/fill_parameter.c \
+			./src/print_card.c \
+
+SRCSTEST = 	\
+
+OBJSTEST	= $(SRCSTEST:.c=.o)
+
+OBJS	= $(SRCS:.c=.o)
+
+CFLAGS = -I ./include/
+
+CFLAGS += -W -Wall -Wextra -pedantic
+
+all: $(NAME) clean
+
+$(NAME):	$(OBJS) $(MAINOBJ)
+		$(CC) $(OBJS) $(MAINOBJ) -o $(NAME) $(CFLAGS)
+
+clean:
+	$(RM) $(OBJS)
+	$(RM) $(OBJSTEST)
+	$(RM) $(MAINOBJ)
+	@find -name "*.gcda" -delete
+	@find -name "*.gcno" -delete
+
+fclean: clean
+	$(RM) $(NAME)
+	$(RM) $(NAMETEST)
+
+re: fclean all
+
+tests_run: $(SRCS) $(SRCSTEST) clean
+	$(CC) --coverage $(SRCS) -lcriterion -lgcov $(SRCSTEST) -o $(NAMETEST) $(CFLAGS)
+	./$(NAMETEST)
+	gcovr
+
+.PHONY: all clean fclean re
